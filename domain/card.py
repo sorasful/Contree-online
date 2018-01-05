@@ -4,6 +4,7 @@ Card classes
 from enum import Enum
 import random
 
+
 class Suit(Enum):
     ALL_TRUMPS = "T"
     NO_TRUMPS = "\u27c2"
@@ -11,15 +12,15 @@ class Suit(Enum):
     DIAMONDS = "\u2662"
     HEARTS = "\u2661"
     SPADES = "\u2660"
-    
-    
+
     def is_real_suit(self):
         return self != self.ALL_TRUMPS and self != self.NO_TRUMPS
     
     def __str__(self):
         return self.value
     
-    __repr__ = __str__ 
+    __repr__ = __str__
+
 
 class _RankEnum:
     def __init__(self, display_name, trump_rank, rank, points, trump_points, no_trump_points, all_trump_points):
@@ -36,6 +37,7 @@ class _RankEnum:
     
     __repr__ = __str__
 
+
 class Rank(Enum):
     ACE   = _RankEnum( "A", 5, 7, 11, 11, 19,  7)
     TEN   = _RankEnum("10", 4, 6, 10, 10, 10,  5)
@@ -51,6 +53,7 @@ class Rank(Enum):
     
     __repr__ = __str__
 
+
 class Card:
     def __init__(self, suit, rank):
         if not suit.is_real_suit():
@@ -64,14 +67,17 @@ class Card:
     __repr__ = __str__
     
     def __eq__(self, other):
-        return( self.__class__ == other.__class__
+        return (self.__class__ == other.__class__
             and self.rank == other.rank
             and self.suit == other.suit)
     
     def __hash__(self):
         return hash((self.rank, self.suit))
-    
+
     def points(self, trump):
+        """
+        Return the points of the card depending on the trump.
+        """
         if trump == Suit.ALL_TRUMPS:
             return self.rank.value.all_trump_points
         elif trump == Suit.NO_TRUMPS:
@@ -81,8 +87,13 @@ class Card:
         else:
             return self.rank.value.points
 
+
 class CardKey:
     def __init__(self, trump, lead_suit):
+        """
+        :param trump:
+        :param lead_suit: Color of the first card played.
+        """
         if not lead_suit.is_real_suit():
             raise ValueError("The lead suit must be real")
         self._trump = trump
@@ -101,6 +112,7 @@ class CardKey:
                 return -1
         return k
 
+
 class Deck:
     def __init__(self):
         self.cards = [Card(s, r) for s in [Suit.CLUBS, Suit.DIAMONDS, Suit.HEARTS, Suit.SPADES] for r in Rank]
@@ -109,8 +121,5 @@ class Deck:
     def __iter__(self):
         return self.cards.__iter__()
     
-    def deal(self):
-        return self.cards.pop()
-    
     def __len__(self):
-        return self.cards.__len__()
+        return len(self.cards)

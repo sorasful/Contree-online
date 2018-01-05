@@ -2,19 +2,23 @@
 Main program
 '''
 
-import os
+import sys
 from flask import Flask
 from flask_restful import Resource, Api
 
-app = Flask(__name__)
-api = Api(app)
 
-class HomeResource(Resource):
-    def get(self):
-        return { 'jouons à': 'la contrée' }
+if __name__ == "__main__":
+    assert sys.version >= 3.5
 
-api.add_resource(HomeResource, '/')
+    app = Flask(__name__)
+    api = Api(app)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
-    
+    class HomeResource(Resource):
+        def get(self):
+            return { 'jouons à': 'la contrée' }
+
+    api.add_resource(HomeResource, '/')
+
+    if __name__ == '__main__':
+
+        app.run(host='0.0.0.0', debug=True)

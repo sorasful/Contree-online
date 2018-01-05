@@ -6,9 +6,11 @@ from enum import Enum
 from domain.card import Rank, Suit, Card, CardKey, Deck
 import random
 
+
 class Phase(Enum):
     BID = 1
     PLAY = 2
+
 
 class Seat(Enum):
     NORTH = 0
@@ -18,6 +20,7 @@ class Seat(Enum):
     
     def next(self):
         return Seat((self.value + 1) % 4)
+
 
 class Bid:
     def __init__(self, points, trump):
@@ -32,6 +35,7 @@ class Bid:
         
         def is_slam(self):
             return points == 250
+
 
 class Match:
     def __init__(self, players):
@@ -69,7 +73,6 @@ class Match:
         self.phase = Phase.PLAY
         self.turn = self.dealer.next()
     
-    
     def start(self):
         self._start_round()
     
@@ -79,11 +82,11 @@ class Match:
     def can_make_bid(self, seat, bid=None):
         return (self.phase == Phase.BID
             and self.turn == seat
-            and (bid == None or self.bid == None or self.bid.points < bid.points)
+            and (bid is None or self.bid is None or self.bid.points < bid.points)
             )
     
     def make_bid(self, seat, bid):
-        if bid == None:
+        if bid is None:
             raise TypeError("bid cannot be None")
         if not self.can_make_bid(seat, bid):
             raise ValueError("Cannot make bid")
@@ -93,15 +96,14 @@ class Match:
     
     def can_pass_bid(self, seat):
         return self.can_make_bid(seat)
-    
-    
+
     def pass_bid(self, seat):
         if not self.can_pass_bid(seat):
             raise ValueError("You shall not pass")
         
-        if self.bid == None and self.dealer == seat:
+        if self.bid is None and self.dealer == seat:
             self._start_round()
-        elif self.bid != None and self.bidder == seat.next():
+        elif self.bid is not None and self.bidder == seat.next():
             self._start_play()
         else:
             self._next_turn()
@@ -111,7 +113,8 @@ class Match:
                 and self.turn == seat
                 # TODO
                 )
-    
+
+
 class MatchInteractor:
         def __init__(self, match, seat):
             self._match = match
@@ -137,4 +140,3 @@ class MatchInteractor:
         
         def can_play(self, card=None):
             return self._match.can_play(self.seat, card)
-        
